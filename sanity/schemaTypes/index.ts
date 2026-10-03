@@ -1,3 +1,6 @@
+import { contentHubSettings } from "./contentHubSettings";
+import { person } from "./person";
+import { newsPage } from "./newsPage";
 import { aboutPage } from "./aboutPage";
 import { caseStudy } from "./caseStudy";
 import { contactPage } from "./contactPage";
@@ -18,5 +21,8 @@ export const schemaTypes = [
   testimonial,
   caseStudy,
   post,
+  person,
+  contentHubSettings,
+  newsPage,
   legalPage,
 ];

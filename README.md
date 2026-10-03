@@ -21,3 +21,17 @@ Todas las variables están documentadas en `.env.example`. Los tokens y claves s
 ## Despliegue
 
 Importe este repositorio en Vercel, configure las variables y use `main` como rama de producción. Configure CORS en Sanity para los dominios de producción, preview y desarrollo.
+
+## Content Hub: noticias y perfil
+
+`/noticias` y `/noticias/[slug]` consultan publicaciones aprobadas en Sanity y se actualizan cada cinco minutos. Sin configuración o si Sanity no responde, se muestran tres publicaciones locales de orientación general; la primera reproduce los puntos del arte suministrado. Una lista vacía en Sanity se respeta. No se incluyen convocatorias ficticias, fechas de publicación inventadas ni biografía sin aprobar.
+
+En Studio, complete `Publicación`, genere su ruta y desactive **Pendiente de revisión editorial** antes de publicar. Una fecha futura oculta el artículo hasta la fecha de publicación. Los campos adicionales cubren tipo, categoría, convocatoria, fuente oficial, verificación, contenido destacado y flujo social. Los artículos se ordenan por fecha; la portada muestra los tres más recientes. Las oportunidades vencidas se muestran cerradas al actualizar la página.
+
+Edite los textos, etiquetas y nombre de navegación de la sección en **Textos del Content Hub** (o **Sección de noticias**), y apruebe el documento. Cree una **Persona** con identificador `soraya-flores` para reemplazar el perfil local con nombre, cargo, biografía y retrato verificados. Hasta recibir una biografía aprobada, el perfil local usa únicamente su nombre y el arte editorial adjunto completo; no se ha extraído ni generado un retrato nuevo.
+
+Los JPEG recibidos están en `public/content/propuestas-errores.jpeg` y `public/brand/vec-solutions-grants-logo.jpeg`. El logo nuevo se conserva como recurso local para revisión de marca; el encabezado mantiene el logo del rediseño existente. Las imágenes subidas a Sanity se sirven mediante el optimizador de Next.js desde el CDN del propio CMS.
+
+Sanity guarda captions aprobados, estado social y fecha programada; **Metricool realiza la publicación social por separado**. No configure secretos de Meta, Instagram, Facebook ni Metricool aquí ni en el CMS. No se añaden variables de entorno.
+
+Esta implementación conserva todos los campos del CMS; añade esquemas `contentHubSettings`, `newsPage` y `person` y campos a `post`, sin migración destructiva. Los documentos existentes deben revisarse y aprobarse explícitamente para aparecer en la sección. No se recibió el paquete de parche ni `styles-additions.css`; los estilos equivalentes se escribieron sobre la arquitectura y paleta actuales.

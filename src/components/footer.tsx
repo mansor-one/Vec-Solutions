@@ -2,23 +2,26 @@ import Link from "next/link";
 import { contact, nav } from "@/content/site";
 import { Logo } from "./logo";
 
-export function Footer() {
+export function Footer({ newsLabel = "Noticias" }: { newsLabel?: string }) {
   return (
     <footer className="footer">
+      <div className="footer-glow" aria-hidden="true" />
       <div className="shell footer-grid">
         <div>
           <Logo />
           <p className="footer-intro">
-            Consultoría para convertir necesidades complejas en rutas claras,
-            sostenibles y medibles.
+            Estrategia con propósito. Soluciones para avanzar.
           </p>
+          <p className="footer-place">Desde Cayey, para todo Puerto Rico.</p>
         </div>
         <div>
           <h2>Explore</h2>
           <ul>
             {nav.map((item) => (
               <li key={item.href}>
-                <Link href={item.href}>{item.label}</Link>
+                <Link href={item.href}>
+                  {item.href === "/noticias" ? newsLabel : item.label}
+                </Link>
               </li>
             ))}
             <li>
@@ -43,7 +46,7 @@ export function Footer() {
       </div>
       <div className="shell footer-bottom">
         <span>© {new Date().getFullYear()} VEC Solutions LLC</span>
-        <span>Puerto Rico</span>
+        <span>Consultoría · Desarrollo económico · Puerto Rico</span>
       </div>
     </footer>
   );
