@@ -824,6 +824,7 @@ img {
 .island-art {
   position: relative;
   min-width: 0;
+  overflow-wrap: anywhere;
 }
 .island-art svg {
   width: 100%;
@@ -1366,6 +1367,7 @@ img {
   overflow: hidden;
   background: white;
   min-width: 0;
+  overflow-wrap: anywhere;
 }
 .news-image {
   display: block;
@@ -1448,3 +1450,8 @@ img {
   }
 }
 
+.news-page .eyebrow,
+.profile-section .eyebrow,
+.news-section .section-action a {
+  color: #875000;
+}

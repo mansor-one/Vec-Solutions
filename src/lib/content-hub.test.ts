@@ -1,17 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 const cms = vi.hoisted(() => ({ fetch: vi.fn() }));
 vi.mock("../../sanity/lib/client", () => ({ client: cms }));
-import { fallbackNews, newsCopy } from "@/content/news";
+import { fallbackNews, hubCopy } from "@/content/news";
 import {
   getNews,
   getNewsBySlug,
-  getNewsCopy,
-  getSoraya,
+  getHubCopy,
+  getSorayaProfile,
   fundingStatus,
   safeUrl,
   displayDate,
   publicPostFilter,
-} from "./news";
+  normalizeNews,
+} from "./content-hub";
 beforeEach(() => {
   cms.fetch.mockReset();
 });
@@ -21,12 +22,56 @@ describe("public Content Hub", () => {
     expect(await getNews(3)).toEqual(fallbackNews);
     expect(await getNewsBySlug(fallbackNews[0].slug)).toEqual(fallbackNews[0]);
     expect(await getNewsBySlug("missing")).toBeNull();
-    expect(await getNewsCopy()).toEqual(newsCopy);
-    expect(await getSoraya()).not.toHaveProperty("bio");
+    expect(await getHubCopy()).toEqual(hubCopy);
+    expect((await getSorayaProfile()).bio).toBe("");
   });
-  it("preserves an intentionally empty CMS rather than resurrecting local articles", async () => {
+  it("uses local articles when Sanity has no approved publications", async () => {
     cms.fetch.mockResolvedValue([]);
-    expect(await getNews()).toEqual([]);
+    expect(await getNews()).toEqual(fallbackNews);
+  });
+  it("resolves fallback detail pages when the CMS is empty", async () => {
+    cms.fetch.mockImplementation((query: string) =>
+      Promise.resolve(query.includes("slug.current == $slug") ? null : []),
+    );
+    expect(await getNewsBySlug(fallbackNews[0].slug)).toEqual(fallbackNews[0]);
+    expect(await getNewsBySlug("missing")).toBeNull();
+  });
+  it("does not mix fallback details into a populated CMS", async () => {
+    cms.fetch.mockImplementation((query: string) =>
+      Promise.resolve(
+        query.includes("slug.current == $slug")
+          ? null
+          : [{ ...fallbackNews[0], slug: "cms-post" }],
+      ),
+    );
+    expect(await getNewsBySlug(fallbackNews[0].slug)).toBeNull();
+  });
+  it("rejects malformed CMS records and never exposes arbitrary image hosts", () => {
+    expect(
+      normalizeNews({ title: "Invalid", slug: "../private", category: "news" }),
+    ).toBeUndefined();
+    const post = normalizeNews({
+      ...fallbackNews[0],
+      imageUrl: "https://example.org/photo.jpg",
+      sourceUrl: "javascript:alert(1)",
+      instagramCaption: "private workflow",
+    });
+    expect(post?.imageUrl).toBeUndefined();
+    expect(post?.sourceUrl).toBeUndefined();
+    expect(post).not.toHaveProperty("instagramCaption");
+  });
+  it("uses only the approved profile and falls back without fabricating a bio", async () => {
+    cms.fetch.mockResolvedValue({
+      name: "Soraya Flores",
+      bio: "Biografía aprobada",
+      photoUrl: "https://example.org/photo.jpg",
+    });
+    const person = await getSorayaProfile();
+    expect(person.bio).toBe("Biografía aprobada");
+    expect(person.photoUrl).toBe("/content/propuestas-errores.jpeg");
+    expect(cms.fetch.mock.calls[0][0]).toContain(
+      "editorialReviewPending == false",
+    );
   });
   it("limits results and queries only approved content without exposing social captions", async () => {
     cms.fetch.mockResolvedValue([
@@ -47,9 +92,9 @@ describe("public Content Hub", () => {
   });
   it("merges empty editorial fields with fallback labels", async () => {
     cms.fetch.mockResolvedValue({ title: "Actualidad", empty: null });
-    const copy = await getNewsCopy();
+    const copy = await getHubCopy();
     expect(copy.title).toBe("Actualidad");
-    expect(copy.empty).toBe(newsCopy.empty);
+    expect(copy.empty).toBe(hubCopy.empty);
   });
   it("closes expired funding and rejects unsafe source links", () => {
     expect(

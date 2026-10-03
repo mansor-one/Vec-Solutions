@@ -3,11 +3,11 @@ import { PuertoRicoHero } from "@/components/puerto-rico-hero";
 import { ServiceCard } from "@/components/service-card";
 import { services } from "@/content/site";
 
-import { getNews, getNewsCopy } from "@/lib/news";
+import { getNews, getHubCopy } from "@/lib/content-hub";
 import { NewsGrid } from "@/components/news-grid";
 export const revalidate = 300;
 export default async function Home() {
-  const [news, copy] = await Promise.all([getNews(3), getNewsCopy()]);
+  const [news, copy] = await Promise.all([getNews(3), getHubCopy()]);
   return (
     <>
       <section className="hero home-hero">
@@ -178,7 +178,7 @@ export default async function Home() {
       <section className="section news-section">
         <div className="shell">
           <div className="section-heading">
-            <p className="eyebrow">{copy.navigationLabel}</p>
+            <p className="eyebrow">{copy.navLabel}</p>
             <div>
               <h2>{copy.title}</h2>
               <p>{copy.introduction}</p>
@@ -187,7 +187,7 @@ export default async function Home() {
           <NewsGrid posts={news} copy={copy} />
           <div className="section-action">
             <Link href="/noticias">
-              {copy.allLabel} <span aria-hidden="true">→</span>
+              {copy.allNews} <span aria-hidden="true">→</span>
             </Link>
           </div>
         </div>

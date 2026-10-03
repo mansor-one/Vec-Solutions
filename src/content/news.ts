@@ -94,24 +94,3 @@ export const fallbackPerson = {
   photoAlt:
     "Pieza de VEC Solutions con la imagen de Soraya y consejos para preparar propuestas.",
 };
-
-// Compatibility labels for the shared site navigation and profile section.
-export const newsCopy = {
-  ...hubCopy,
-  navigationLabel: hubCopy.navLabel,
-  allLabel: hubCopy.allNews,
-  readLabel: hubCopy.readMore,
-  backLabel: hubCopy.back,
-  profileHeading: hubCopy.profileTitle,
-  empty: "Próximamente compartiremos nuevas publicaciones.",
-};
-export type NewsCopy = typeof newsCopy;
-export type NewsPost = NewsItem;
-export type Person = {
-  name: string;
-  role?: string;
-  bio?: string;
-  localImage?: string;
-  imageAlt?: string;
-  photo?: { asset?: { _ref?: string }; alt?: string };
-};

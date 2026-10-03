@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/page-hero";
 import { NewsGrid } from "@/components/news-grid";
-import { getNews, getNewsCopy } from "@/lib/news";
+import { getNews, getHubCopy } from "@/lib/content-hub";
 export const revalidate = 300;
 export async function generateMetadata(): Promise<Metadata> {
-  const copy = await getNewsCopy();
+  const copy = await getHubCopy();
   return {
     title: copy.title,
     description: copy.introduction,
@@ -12,9 +12,9 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 export default async function NewsPage() {
-  const [items, copy] = await Promise.all([getNews(), getNewsCopy()]);
+  const [items, copy] = await Promise.all([getNews(), getHubCopy()]);
   return (
-    <>
+    <div className="news-page">
       <PageHero eyebrow={copy.navLabel} title={copy.title}>
         <p>{copy.introduction}</p>
       </PageHero>
@@ -23,6 +23,6 @@ export default async function NewsPage() {
           <NewsGrid posts={items} copy={copy} />
         </div>
       </section>
-    </>
+    </div>
   );
 }

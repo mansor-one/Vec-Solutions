@@ -51,7 +51,7 @@ export default async function NewsDetail({ params }: Props) {
     ],
   ].filter(([, value]) => value);
   return (
-    <>
+    <div className="news-page">
       <PageHero eyebrow={copy[`${item.category}Label`]} title={item.title}>
         <p>{item.excerpt}</p>
       </PageHero>
@@ -112,6 +112,6 @@ export default async function NewsDetail({ params }: Props) {
           </p>
         </article>
       </section>
-    </>
+    </div>
   );
 }

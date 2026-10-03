@@ -37,7 +37,14 @@ export const post = defineType({
       title: "Imagen principal",
       description: "Imagen con derechos de uso verificados.",
       type: "image",
-      fields: [{ name: "alt", title: "Texto alternativo", type: "string" }],
+      fields: [
+        {
+          name: "alt",
+          title: "Texto alternativo",
+          type: "string",
+          validation: (r) => r.required(),
+        },
+      ],
     }),
     defineField({
       name: "type",
@@ -59,7 +66,13 @@ export const post = defineType({
       type: "string",
       options: { list: ["open", "closed", "upcoming"] },
     }),
-    defineField({ name: "deadline", title: "Fecha límite", type: "datetime" }),
+    defineField({
+      name: "deadline",
+      title: "Fecha límite",
+      type: "datetime",
+      description:
+        "Incluya la hora y zona horaria oficiales de la convocatoria.",
+    }),
     defineField({
       name: "amount",
       title: "Monto y moneda según convocatoria",

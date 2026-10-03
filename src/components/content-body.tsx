@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { PortableText, type PortableTextBlock } from "next-sanity";
-import { imageUrl, safeUrl } from "@/lib/news";
+import { imageUrl, safeUrl } from "@/lib/content-hub";
 export function ContentBody({ body }: { body: PortableTextBlock[] }) {
   return (
     <PortableText

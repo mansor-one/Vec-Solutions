@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import "./globals.css";
-import { getNewsCopy } from "@/lib/news";
+import { getHubCopy } from "@/lib/content-hub";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vec-solutions.net";
 
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const copy = await getNewsCopy();
+  const copy = await getHubCopy();
   const schema = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
@@ -51,9 +51,9 @@ export default async function RootLayout({
         <a className="skip-link" href="#contenido">
           Saltar al contenido
         </a>
-        <Header newsLabel={copy.navigationLabel} />
+        <Header newsLabel={copy.navLabel} />
         <main id="contenido">{children}</main>
-        <Footer newsLabel={copy.navigationLabel} />
+        <Footer newsLabel={copy.navLabel} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

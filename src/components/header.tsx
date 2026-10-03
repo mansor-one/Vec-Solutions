@@ -14,6 +14,7 @@ export function Header({ newsLabel = "Noticias" }: { newsLabel?: string }) {
         <button
           className="menu-toggle"
           type="button"
+          aria-label="Menú"
           aria-expanded={open}
           aria-controls="primary-navigation"
           onClick={() => setOpen((value) => !value)}

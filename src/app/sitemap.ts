@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { services } from "@/content/site";
-import { getNews } from "@/lib/news";
+import { getNews } from "@/lib/content-hub";
 export const revalidate = 300;
 const base = process.env.NEXT_PUBLIC_SITE_URL || "https://vec-solutions.net";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

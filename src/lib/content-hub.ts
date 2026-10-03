@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { z } from "zod";
+import { dataset, projectId } from "../../sanity/env";
 import { client } from "../../sanity/lib/client";
 import {
   fallbackNews,
@@ -26,6 +27,15 @@ export function safeUrl(value: unknown): string | undefined {
     if (["https:", "http:"].includes(url.protocol)) return url.href;
   } catch {}
 }
+function sanityImageUrl(value: unknown) {
+  const url = safeUrl(value);
+  return url &&
+    new URL(url).protocol === "https:" &&
+    new URL(url).hostname === "cdn.sanity.io" &&
+    new URL(url).pathname.startsWith(`/images/${projectId}/${dataset}/`)
+    ? url
+    : undefined;
+}
 export function normalizeNews(value: unknown): NewsItem | undefined {
   const result = newsSchema.safeParse(value);
   if (!result.success) return;
@@ -50,10 +60,7 @@ export function normalizeNews(value: unknown): NewsItem | undefined {
     if (typeof data[key] === "string") item[key] = data[key];
   }
   item.sourceUrl = safeUrl(data.sourceUrl);
-  const image = safeUrl(data.imageUrl);
-  // Only the connected Sanity asset host is allowed through the image optimizer.
-  item.imageUrl =
-    image && new URL(image).hostname === "cdn.sanity.io" ? image : undefined;
+  item.imageUrl = sanityImageUrl(data.imageUrl);
   if (Array.isArray(data.body)) item.body = data.body as NewsItem["body"];
   if (["open", "closed", "upcoming"].includes(String(data.fundingStatus)))
     item.fundingStatus = data.fundingStatus as NewsItem["fundingStatus"];
@@ -71,7 +78,7 @@ const getAllNews = cache(async (): Promise<NewsItem[]> => {
     const items = data
       .map(normalizeNews)
       .filter((item): item is NewsItem => Boolean(item));
-    return items;
+    return data.length === 0 ? fallbackNews : items;
   } catch {
     return fallbackNews;
   }
@@ -88,7 +95,11 @@ export async function getNewsBySlug(slug: string) {
       { slug },
       { next: { revalidate: 300 }, timeout: 5000 },
     );
-    return normalizeNews(value) ?? null;
+    return (
+      normalizeNews(value) ??
+      (await getAllNews()).find((item) => item.slug === slug) ??
+      null
+    );
   } catch {
     return (await getAllNews()).find((item) => item.slug === slug) ?? null;
   }
@@ -97,18 +108,11 @@ export const getHubCopy = cache(async (): Promise<HubCopy> => {
   if (!client) return hubCopy;
   try {
     const settings = await client.fetch(
-      `*[_type in ["contentHubSettings", "newsPage"] && !(_id in path("drafts.**")) && editorialReviewPending == false] | order(_updatedAt desc)[0]`,
+      `*[_type == "contentHubSettings" && !(_id in path("drafts.**")) && editorialReviewPending == false] | order(_updatedAt desc)[0]`,
       {},
       { next: { revalidate: 300 }, timeout: 5000 },
     );
     const copy = { ...hubCopy };
-    if (settings?._type === "newsPage") {
-      settings.allNews = settings.allLabel;
-      settings.readMore = settings.readLabel;
-      settings.back = settings.backLabel;
-      settings.navLabel = settings.navigationLabel;
-      settings.profileTitle = settings.profileHeading;
-    }
     for (const key of Object.keys(copy) as (keyof HubCopy)[])
       if (typeof settings?.[key] === "string" && settings[key].trim())
         copy[key] = settings[key];
@@ -130,14 +134,15 @@ export const getSorayaProfile = cache(async () => {
       name: profile.name || fallbackPerson.name,
       role: profile.role || "",
       bio: profile.bio || "",
-      photoUrl: safeUrl(profile.photoUrl) || fallbackPerson.photoUrl,
+      photoUrl: sanityImageUrl(profile.photoUrl) || fallbackPerson.photoUrl,
       photoAlt: profile.photoAlt || fallbackPerson.photoAlt,
     };
   } catch {
     return fallbackPerson;
   }
 });
-export function displayDate(value: string) {
+export function displayDate(value?: string) {
+  if (!value) return;
   const date = new Date(value.length === 10 ? `${value}T12:00:00Z` : value);
   if (Number.isNaN(date.getTime())) return undefined;
   return new Intl.DateTimeFormat("es-PR", {
@@ -150,4 +155,13 @@ export function fundingStatus(item: NewsItem, now = Date.now()) {
   if (item.deadline && new Date(item.deadline).getTime() <= now)
     return "closed";
   return item.fundingStatus;
+}
+
+export function imageUrl(image?: { asset?: { _ref?: string } }) {
+  const match = image?.asset?._ref?.match(
+    /^image-([a-zA-Z0-9]+)-(\d+x\d+)-(jpg|jpeg|png|webp|gif)$/,
+  );
+  return match
+    ? `https://cdn.sanity.io/images/${projectId}/${dataset}/${match[1]}-${match[2]}.${match[3]}`
+    : undefined;
 }
