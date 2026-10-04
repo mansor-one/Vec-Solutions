@@ -184,7 +184,7 @@ export default async function Home() {
               <p>{copy.introduction}</p>
             </div>
           </div>
-          <NewsGrid posts={news} copy={copy} />
+          <NewsGrid posts={news} copy={copy} editorial />
           <div className="section-action">
             <Link href="/noticias">
               {copy.allNews} <span aria-hidden="true">→</span>

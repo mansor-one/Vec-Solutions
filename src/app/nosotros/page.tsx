@@ -84,9 +84,9 @@ export default async function AboutPage() {
           </div>
         </div>
       </section>
-      <section className="section">
+      <section className="section profile-editorial">
         <div className="shell profile-section">
-          <div>
+          <div className="profile-copy">
             <p className="eyebrow">{copy.profileTitle}</p>
             <h2>{person.name}</h2>
             {person.role && <p>{person.role}</p>}
@@ -98,7 +98,8 @@ export default async function AboutPage() {
               alt={person.photoAlt}
               width={600}
               height={600}
-              className="content-image"
+              className="content-image profile-image"
+              sizes="(max-width: 760px) 100vw, 55vw"
             />
           )}
         </div>

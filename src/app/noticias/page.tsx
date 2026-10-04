@@ -20,7 +20,7 @@ export default async function NewsPage() {
       </PageHero>
       <section className="section">
         <div className="shell">
-          <NewsGrid posts={items} copy={copy} />
+          <NewsGrid posts={items} copy={copy} editorial />
         </div>
       </section>
     </div>

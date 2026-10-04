@@ -5,17 +5,28 @@ import { displayDate } from "@/lib/content-hub";
 export function NewsGrid({
   posts,
   copy,
+  editorial = false,
 }: {
   posts: NewsItem[];
   copy: HubCopy;
+  editorial?: boolean;
 }) {
   if (!posts.length) return <p>{copy.empty}</p>;
+  const lead = posts.find((post) => post.featured) ?? posts[0];
+  const orderedPosts = editorial
+    ? [lead, ...posts.filter((post) => post !== lead)]
+    : posts;
   return (
-    <div className="news-grid">
-      {posts.map((post) => {
+    <div className={editorial ? "news-grid news-grid-editorial" : "news-grid"}>
+      {orderedPosts.map((post, index) => {
         const src = post.imageUrl;
         return (
-          <article className="news-card" key={post.slug}>
+          <article
+            className={
+              editorial && index === 0 ? "news-card news-lead" : "news-card"
+            }
+            key={post.slug}
+          >
             {src && (
               <Image
                 src={src}
@@ -23,6 +34,11 @@ export function NewsGrid({
                 width={1254}
                 height={1254}
                 className="news-image"
+                sizes={
+                  editorial
+                    ? "(max-width: 760px) 100vw, 60vw"
+                    : "(max-width: 620px) 100vw, 33vw"
+                }
               />
             )}
             <div className="news-card-content">

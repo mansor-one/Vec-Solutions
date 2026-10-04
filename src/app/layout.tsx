@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import "./globals.css";
+import "./editorial.css";
 import { getHubCopy } from "@/lib/content-hub";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vec-solutions.net";
