@@ -32,7 +32,7 @@ Edite los textos, etiquetas y nombre de navegación de la sección en **Textos d
 
 El arte editorial recibido está en `public/content/propuestas-errores.jpeg`; el encabezado mantiene el logo del rediseño existente. Las imágenes subidas a Sanity se sirven mediante el optimizador de Next.js desde el CDN del propio CMS.
 
-Sanity guarda captions aprobados, estado social y fecha programada; **Metricool realiza la publicación social por separado**. No configure secretos de Meta, Instagram, Facebook ni Metricool aquí ni en el CMS. No se añaden variables de entorno.
+El [flujo editorial Sanity → Web → Metricool](SORAYA-GUIDE.md#flujo-editorial-sanity--web--metricool) describe aprobación, captions, selección de redes y confirmación de programación. Sanity guarda captions aprobados, estado social, fecha programada y referencias de Metricool; **Metricool realiza la publicación social por separado**. No configure secretos de Meta, Instagram, Facebook ni Metricool aquí ni en el CMS. No se añaden variables de entorno.
 
 Esta implementación conserva todos los campos del CMS; usa los esquemas `contentHubSettings` y `person` y amplía `post`. El schema duplicado `newsPage` se unificó mediante una [migración documentada y no destructiva](docs/content-hub-reconciliation.md). Los documentos existentes deben revisarse y aprobarse explícitamente para aparecer en la sección. No se recibió el paquete de parche ni `styles-additions.css`; los estilos equivalentes se escribieron sobre la arquitectura y paleta actuales.
 

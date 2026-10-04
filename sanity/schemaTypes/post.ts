@@ -112,6 +112,18 @@ export const post = defineType({
       type: "text",
     }),
     defineField({
+      name: "publishToInstagram",
+      title: "Publicar en Instagram",
+      type: "boolean",
+      initialValue: true,
+    }),
+    defineField({
+      name: "publishToFacebook",
+      title: "Publicar en Facebook",
+      type: "boolean",
+      initialValue: true,
+    }),
+    defineField({
       name: "socialStatus",
       title: "Estado social (gestión en Metricool)",
       type: "string",
@@ -124,6 +136,20 @@ export const post = defineType({
       name: "scheduledAt",
       title: "Fecha programada en Metricool",
       type: "datetime",
+    }),
+    defineField({
+      name: "metricoolUuid",
+      title: "UUID de Metricool",
+      type: "string",
+      readOnly: true,
+      description:
+        "Identificador estable de la publicación programada en Metricool.",
+    }),
+    defineField({
+      name: "metricoolPlannerUrl",
+      title: "Abrir en Metricool",
+      type: "url",
+      readOnly: true,
     }),
     defineField({
       name: "author",
