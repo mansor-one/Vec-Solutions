@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { contactSchema } from "@/lib/contact-schema";
+import { logResendError } from "@/lib/resend-error";
 
 export async function POST(request: Request) {
   const form = await request.formData();
@@ -22,27 +23,40 @@ export async function POST(request: Request) {
       { status: 503 },
     );
   }
-  const resend = new Resend(apiKey);
   const { name, organization, email, phone, service, message } = parsed.data;
-  const result = await resend.emails.send({
-    from: "VEC Solutions <onboarding@resend.dev>",
-    to: recipient,
-    replyTo: email,
-    subject: `Consulta web de ${name}`,
-    text: [
-      `Nombre: ${name}`,
-      `Organización: ${organization || "—"}`,
-      `Correo: ${email}`,
-      `Teléfono: ${phone || "—"}`,
-      `Servicio: ${service || "—"}`,
-      "",
+  try {
+    const resend = new Resend(apiKey);
+    const result = await resend.emails.send({
+      from: "VEC Solutions <onboarding@resend.dev>",
+      to: recipient,
+      replyTo: email,
+      subject: `Consulta web de ${name}`,
+      text: [
+        `Nombre: ${name}`,
+        `Organización: ${organization || "—"}`,
+        `Correo: ${email}`,
+        `Teléfono: ${phone || "—"}`,
+        `Servicio: ${service || "—"}`,
+        "",
+        message,
+      ].join("\n"),
+    });
+    if (result.error) throw result.error;
+    return Response.json({ ok: true });
+  } catch (error) {
+    logResendError(error, [
+      apiKey,
+      recipient,
+      name,
+      organization,
+      email,
+      phone,
+      service,
       message,
-    ].join("\n"),
-  });
-  if (result.error)
+    ]);
     return Response.json(
       { ok: false, message: "No fue posible enviar el mensaje." },
       { status: 502 },
     );
-  return Response.json({ ok: true });
+  }
 }

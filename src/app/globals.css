@@ -824,6 +824,7 @@ img {
 .island-art {
   position: relative;
   min-width: 0;
+  overflow-wrap: anywhere;
 }
 .island-art svg {
   width: 100%;
@@ -1352,4 +1353,105 @@ img {
   .footer .logo {
     width: 230px;
   }
+}
+
+/* Content Hub: keeps the Puerto Rico redesign palette. */
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+.news-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.news-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.news-card-content {
+  padding: 1.5rem;
+}
+.news-card h3 {
+  font-size: 1.35rem;
+  line-height: 1.3;
+}
+.news-category {
+  color: var(--muted);
+  font-weight: 700;
+}
+.news-card time,
+.news-detail time {
+  color: var(--muted);
+}
+.news-card .text-link,
+.news-detail .text-link {
+  color: #875000;
+}
+.news-detail {
+  max-width: 850px;
+  overflow-wrap: anywhere;
+}
+.news-detail h1 {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  line-height: 1.1;
+}
+.content-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 2rem 0;
+  border-radius: 12px;
+}
+.news-facts {
+  padding: 1.5rem;
+  background: var(--cream);
+  border-radius: 12px;
+}
+.news-facts > div {
+  margin-bottom: 1rem;
+}
+.news-facts dt {
+  font-weight: 700;
+}
+.news-facts dd {
+  margin: 0;
+  white-space: pre-line;
+}
+.news-body {
+  line-height: 1.8;
+}
+.news-body a {
+  text-decoration: underline;
+}
+.profile-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+.profile-bio {
+  white-space: pre-line;
+}
+@media (max-width: 980px) {
+  .news-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 620px) {
+  .news-grid,
+  .profile-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+.news-page .eyebrow,
+.profile-section .eyebrow,
+.news-section .section-action a {
+  color: #875000;
 }

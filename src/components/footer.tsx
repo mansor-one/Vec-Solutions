@@ -2,7 +2,7 @@ import Link from "next/link";
 import { contact, nav } from "@/content/site";
 import { Logo } from "./logo";
 
-export function Footer() {
+export function Footer({ newsLabel = "Noticias" }: { newsLabel?: string }) {
   return (
     <footer className="footer">
       <div className="footer-glow" aria-hidden="true" />
@@ -19,7 +19,9 @@ export function Footer() {
           <ul>
             {nav.map((item) => (
               <li key={item.href}>
-                <Link href={item.href}>{item.label}</Link>
+                <Link href={item.href}>
+                  {item.href === "/noticias" ? newsLabel : item.label}
+                </Link>
               </li>
             ))}
             <li>

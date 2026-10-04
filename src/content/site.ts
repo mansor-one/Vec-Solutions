@@ -232,5 +232,6 @@ export const nav = [
   { href: "/", label: "Inicio" },
   { href: "/nosotros", label: "Nosotros" },
   { href: "/servicios", label: "Servicios" },
+  { href: "/noticias", label: "Noticias" },
   { href: "/contacto", label: "Contacto" },
 ] as const;

@@ -21,3 +21,21 @@ Todas las variables están documentadas en `.env.example`. Los tokens y claves s
 ## Despliegue
 
 Importe este repositorio en Vercel, configure las variables y use `main` como rama de producción. Configure CORS en Sanity para los dominios de producción, preview y desarrollo.
+
+## Content Hub: noticias y perfil
+
+`/noticias` y `/noticias/[slug]` consultan publicaciones aprobadas en Sanity y se actualizan cada cinco minutos. Sin configuración o si Sanity no responde, se muestran tres publicaciones locales de orientación general; la primera reproduce los puntos del arte suministrado. Si todavía no hay publicaciones aprobadas en Sanity, también se usa el respaldo local. No se incluyen convocatorias ficticias, fechas de publicación inventadas ni biografía sin aprobar.
+
+En Studio, complete `Publicación`, genere su ruta y desactive **Pendiente de revisión editorial** antes de publicar. Una fecha futura oculta el artículo hasta la fecha de publicación. Los campos adicionales cubren tipo, categoría, convocatoria, fuente oficial, verificación, contenido destacado y flujo social. Los artículos se ordenan por fecha; la portada muestra los tres más recientes. Las oportunidades vencidas se muestran cerradas al actualizar la página.
+
+Edite los textos, etiquetas y nombre de navegación de la sección en **Textos del Content Hub**, y apruebe el documento. Cree una **Persona** con identificador `soraya-flores` para reemplazar el perfil local con nombre, cargo, biografía y retrato verificados. Hasta recibir una biografía aprobada, el perfil local usa únicamente su nombre y el arte editorial adjunto completo; no se ha extraído ni generado un retrato nuevo.
+
+El arte editorial recibido está en `public/content/propuestas-errores.jpeg`; el encabezado mantiene el logo del rediseño existente. Las imágenes subidas a Sanity se sirven mediante el optimizador de Next.js desde el CDN del propio CMS.
+
+El [flujo editorial Sanity → Web → Metricool](SORAYA-GUIDE.md#flujo-editorial-sanity--web--metricool) describe aprobación, captions, selección de redes y confirmación de programación. Sanity guarda captions aprobados, estado social, fecha programada y referencias de Metricool; **Metricool realiza la publicación social por separado**. No configure secretos de Meta, Instagram, Facebook ni Metricool aquí ni en el CMS. No se añaden variables de entorno.
+
+Esta implementación conserva todos los campos del CMS; usa los esquemas `contentHubSettings` y `person` y amplía `post`. El schema duplicado `newsPage` se unificó mediante una [migración documentada y no destructiva](docs/content-hub-reconciliation.md). Los documentos existentes deben revisarse y aprobarse explícitamente para aparecer en la sección. No se recibió el paquete de parche ni `styles-additions.css`; los estilos equivalentes se escribieron sobre la arquitectura y paleta actuales.
+
+## Diagnóstico del formulario de Contacto
+
+Los fallos de Resend en `/api/contacto` registran únicamente `name`, `message` y `statusCode` cuando está disponible, bajo la etiqueta `[contacto] Resend error`. Se redactan correos, credenciales y valores del formulario que el proveedor pudiera repetir. No se registra el objeto de error completo ni la solicitud. La respuesta pública sigue siendo genérica. Consulte los logs de ejecución del deployment correspondiente después de un envío de prueba; no publique valores de variables ni datos personales.

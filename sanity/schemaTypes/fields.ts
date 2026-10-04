@@ -30,5 +30,12 @@ export const portableBody = defineField({
   title: "Contenido",
   description: "Contenido principal editable de la página.",
   type: "array",
-  of: [{ type: "block" }, { type: "image", options: { hotspot: true } }],
+  of: [
+    { type: "block" },
+    {
+      type: "image",
+      options: { hotspot: true },
+      fields: [{ name: "alt", title: "Texto alternativo", type: "string" }],
+    },
+  ],
 });

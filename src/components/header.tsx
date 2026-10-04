@@ -5,7 +5,7 @@ import Link from "next/link";
 import { nav } from "@/content/site";
 import { Logo } from "./logo";
 
-export function Header() {
+export function Header({ newsLabel = "Noticias" }: { newsLabel?: string }) {
   const [open, setOpen] = useState(false);
   return (
     <header className="site-header">
@@ -14,6 +14,7 @@ export function Header() {
         <button
           className="menu-toggle"
           type="button"
+          aria-label="Menú"
           aria-expanded={open}
           aria-controls="primary-navigation"
           onClick={() => setOpen((value) => !value)}
@@ -30,7 +31,7 @@ export function Header() {
             {nav.map((item) => (
               <li key={item.href}>
                 <Link href={item.href} onClick={() => setOpen(false)}>
-                  {item.label}
+                  {item.href === "/noticias" ? newsLabel : item.label}
                 </Link>
               </li>
             ))}
