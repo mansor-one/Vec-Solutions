@@ -3,7 +3,11 @@ import { PuertoRicoHero } from "@/components/puerto-rico-hero";
 import { ServiceCard } from "@/components/service-card";
 import { services } from "@/content/site";
 
-export default function Home() {
+import { getNews, getHubCopy } from "@/lib/content-hub";
+import { NewsGrid } from "@/components/news-grid";
+export const revalidate = 300;
+export default async function Home() {
+  const [news, copy] = await Promise.all([getNews(3), getHubCopy()]);
   return (
     <>
       <section className="hero home-hero">
@@ -168,6 +172,23 @@ export default function Home() {
               <span aria-hidden="true">◎</span>
               <h3>Iniciativas de impacto</h3>
             </article>
+          </div>
+        </div>
+      </section>
+      <section className="section news-section">
+        <div className="shell">
+          <div className="section-heading">
+            <p className="eyebrow">{copy.navLabel}</p>
+            <div>
+              <h2>{copy.title}</h2>
+              <p>{copy.introduction}</p>
+            </div>
+          </div>
+          <NewsGrid posts={news} copy={copy} />
+          <div className="section-action">
+            <Link href="/noticias">
+              {copy.allNews} <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </div>
       </section>

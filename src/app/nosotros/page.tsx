@@ -7,7 +7,12 @@ export const metadata: Metadata = {
   description: "Conozca el enfoque de consultoría de VEC Solutions LLC.",
   alternates: { canonical: "/nosotros" },
 };
-export default function AboutPage() {
+import { getSorayaProfile, getHubCopy } from "@/lib/content-hub";
+import Image from "next/image";
+export const revalidate = 300;
+export default async function AboutPage() {
+  const [person, copy] = await Promise.all([getSorayaProfile(), getHubCopy()]);
+  const photo = person.photoUrl;
   return (
     <>
       <PageHero
@@ -77,6 +82,25 @@ export default function AboutPage() {
               </p>
             </article>
           </div>
+        </div>
+      </section>
+      <section className="section">
+        <div className="shell profile-section">
+          <div>
+            <p className="eyebrow">{copy.profileTitle}</p>
+            <h2>{person.name}</h2>
+            {person.role && <p>{person.role}</p>}
+            {person.bio && <p className="profile-bio">{person.bio}</p>}
+          </div>
+          {photo && (
+            <Image
+              src={photo}
+              alt={person.photoAlt}
+              width={600}
+              height={600}
+              className="content-image"
+            />
+          )}
         </div>
       </section>
       <section className="cta">
