@@ -35,3 +35,7 @@ El arte editorial recibido está en `public/content/propuestas-errores.jpeg`; el
 Sanity guarda captions aprobados, estado social y fecha programada; **Metricool realiza la publicación social por separado**. No configure secretos de Meta, Instagram, Facebook ni Metricool aquí ni en el CMS. No se añaden variables de entorno.
 
 Esta implementación conserva todos los campos del CMS; usa los esquemas `contentHubSettings` y `person` y amplía `post`. El schema duplicado `newsPage` se unificó mediante una [migración documentada y no destructiva](docs/content-hub-reconciliation.md). Los documentos existentes deben revisarse y aprobarse explícitamente para aparecer en la sección. No se recibió el paquete de parche ni `styles-additions.css`; los estilos equivalentes se escribieron sobre la arquitectura y paleta actuales.
+
+## Diagnóstico del formulario de Contacto
+
+Los fallos de Resend en `/api/contacto` registran únicamente `name`, `message` y `statusCode` cuando está disponible, bajo la etiqueta `[contacto] Resend error`. Se redactan correos, credenciales y valores del formulario que el proveedor pudiera repetir. No se registra el objeto de error completo ni la solicitud. La respuesta pública sigue siendo genérica. Consulte los logs de ejecución del deployment correspondiente después de un envío de prueba; no publique valores de variables ni datos personales.
